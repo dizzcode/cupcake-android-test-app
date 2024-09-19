@@ -4,6 +4,7 @@ package dizzcode.com.cupcake
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -41,11 +42,11 @@ import dizzcode.com.cupcake.ui.StartOrderScreen
  * Pickup: Select the pickup date from a list of choices.
  * Summary: Review the selections and either send or cancel the order.
  */
-enum class CupcakeScreen(){
-    Start,
-    Flavor,
-    Pickup,
-    Summary
+enum class CupcakeScreen(@StringRes val title: Int){
+    Start(title = R.string.app_name),
+    Flavor(title = R.string.choose_flavor),
+    Pickup(title = R.string.choose_pickup_date),
+    Summary(title = R.string.order_summary)
 }
 
 /**
@@ -54,12 +55,13 @@ enum class CupcakeScreen(){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CupcakeAppBar(
+    currentScreen: CupcakeScreen,
     canNavigateBack: Boolean,
     navigateUp: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TopAppBar(
-        title = { Text(stringResource(id = R.string.app_name)) },
+        title = { Text(stringResource(id = currentScreen.title)) },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ),
@@ -87,8 +89,9 @@ fun CupcakeApp(
     Scaffold(
         topBar = {
             CupcakeAppBar(
+                currentScreen = CupcakeScreen.Start,
                 canNavigateBack = false,
-                navigateUp = { /* TODO: implement back navigation */ }
+                navigateUp = { }
             )
         }
     ) {  innerPadding ->
