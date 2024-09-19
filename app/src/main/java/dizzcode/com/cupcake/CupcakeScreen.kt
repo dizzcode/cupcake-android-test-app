@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dizzcode.com.cupcake.data.DataSource
 import dizzcode.com.cupcake.ui.OrderSummaryScreen
@@ -86,12 +87,23 @@ fun CupcakeApp(
     navController: NavHostController = rememberNavController()
 ) {
 
+    val backStackEntry by navController.currentBackStackEntryAsState()
+
+    val currentScreen = CupcakeScreen.valueOf(
+        backStackEntry?.destination?.route ?: CupcakeScreen.Start.name
+    )
+
+    //canNavigateBack = For the canNavigateBack parameter, pass in a boolean expression checking if the
+    // previousBackStackEntry property of navController is not equal to null.
+
+    //navigateUp = To actually navigate back to the previous screen, call the navigateUp() method of navController.
+
     Scaffold(
         topBar = {
             CupcakeAppBar(
-                currentScreen = CupcakeScreen.Start,
-                canNavigateBack = false,
-                navigateUp = { }
+                currentScreen = currentScreen,
+                canNavigateBack = navController.previousBackStackEntry != null,
+                navigateUp = { navController.navigateUp() }
             )
         }
     ) {  innerPadding ->
